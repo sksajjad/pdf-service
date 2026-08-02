@@ -8,7 +8,7 @@ app.use(express.json({ limit: "20mb" }));
 app.post("/pdf", async (req, res) => {
 
     try {
-
+        console.log("Chrome path:", puppeteer.executablePath());
         const browser = await puppeteer.launch({
             headless: true,
             executablePath: puppeteer.executablePath(),
@@ -17,7 +17,7 @@ app.post("/pdf", async (req, res) => {
                 "--disable-setuid-sandbox"
             ]
         });
-        console.log("Chrome path:", puppeteer.executablePath());
+        
         const page = await browser.newPage();
 
         await page.goto(req.body.url, {
