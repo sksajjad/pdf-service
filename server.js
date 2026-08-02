@@ -12,7 +12,7 @@ app.get("/test", (req, res) => {
     res.send("OK");
 });
 app.post("/pdf", async (req, res) => {
-
+    res.send("POST /pdf reached");
     const browser = await puppeteer.launch({
         headless: true,
         executablePath: "/usr/bin/chromium",
