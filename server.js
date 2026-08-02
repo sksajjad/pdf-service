@@ -34,6 +34,8 @@ const pdf = await page.pdf({
     format: "A4",
     printBackground: true
 });
+        console.log(Buffer.isBuffer(pdf));
+        console.log(pdf.constructor.name);
 
 console.log("5. PDF created");
 
