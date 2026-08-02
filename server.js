@@ -17,7 +17,7 @@ app.post("/pdf", async (req, res) => {
                 "--disable-setuid-sandbox"
             ]
         });
-
+        console.log("Chrome path:", puppeteer.executablePath());
         const page = await browser.newPage();
 
         await page.goto(req.body.url, {
