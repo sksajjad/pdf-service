@@ -39,8 +39,13 @@ console.log("5. PDF created");
 
         await browser.close();
 
-        res.setHeader("Content-Type", "application/pdf");
-        res.send(pdf);
+        res.set({
+            "Content-Type": "application/pdf",
+            "Content-Length": pdf.length,
+            "Content-Disposition": "inline; filename=invoice.pdf"
+        });
+
+res.end(pdf);
 
     } catch (err) {
 
