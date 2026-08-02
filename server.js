@@ -4,7 +4,13 @@ const puppeteer = require("puppeteer");
 const app = express();
 
 app.use(express.json({ limit: "20mb" }));
+app.get("/", (req, res) => {
+    res.send("PDF Server is Running");
+});
 
+app.get("/test", (req, res) => {
+    res.send("OK");
+});
 app.post("/pdf", async (req, res) => {
 
     const browser = await puppeteer.launch({
