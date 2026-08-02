@@ -1,62 +1,41 @@
-const express = require("express");
-const puppeteer = require("puppeteer");
+const express = require('express');
+const bodyParser = require('body-parser');
+const puppeteer = require('puppeteer');
 
 const app = express();
 
-app.use(express.json({ limit: "20mb" }));
+app.use(bodyParser.json({
+    limit:'20mb'
+}));
 
-app.post("/pdf", async (req, res) => {
+app.post('/pdf', async(req,res)=>{
 
-    try {
+    const browser = await puppeteer.launch({
+        headless:true,
+        args:[
+            '--no-sandbox',
+            '--disable-setuid-sandbox'
+        ]
+    });
 
-        console.log("1. Launching browser");
+    const page = await browser.newPage();
 
-const browser = await puppeteer.launch({
-    headless: true,
-    executablePath: "/usr/bin/chromium",
-    args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox"
-    ]
-});
+    await page.setContent(req.body.html,{
+        waitUntil:'networkidle0'
+    });
 
-console.log("2. Browser launched");
+    const pdf = await page.pdf({
+        format:'A4',
+        printBackground:true
+    });
 
-const page = await browser.newPage();
+    await browser.close();
 
-console.log("3. Setting HTML");
-
-await page.setContent(req.body.html);
-
-console.log("4. Creating PDF");
-
-const pdf = await page.pdf({
-    format: "A4",
-    printBackground: true
-});
-        console.log(Buffer.isBuffer(pdf));
-        console.log(pdf.constructor.name);
-
-console.log("5. PDF created");
-
-        await browser.close();
-
-        res.set({
-            "Content-Type": "application/pdf",
-            "Content-Length": pdf.length,
-            "Content-Disposition": "inline; filename=invoice.pdf"
-        });
-
-res.end(pdf);
-
-    } catch (err) {
-
-        console.error(err);
-
-        res.status(500).send(err.stack);
-
-    }
+    res.contentType("application/pdf");
+    res.send(pdf);
 
 });
 
-app.listen(process.env.PORT || 3000);
+const port = process.env.PORT || 10000;
+
+app.listen(port);
