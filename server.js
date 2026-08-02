@@ -7,7 +7,9 @@ const app = express();
 app.use(bodyParser.json({
     limit:'20mb'
 }));
-
+app.get('/', (req, res) => {
+    res.send('PDF Server is Running');
+});
 app.post('/pdf', async(req,res)=>{
 
     const browser = await puppeteer.launch({
