@@ -7,54 +7,31 @@ app.use(express.json({ limit: "20mb" }));
 
 app.post("/pdf", async (req, res) => {
 
-    try {
-        console.log("Chrome path:", puppeteer.executablePath());
-        const browser = await puppeteer.launch({
-            headless: true,
-            executablePath: puppeteer.executablePath(),
-            args: [
-                "--no-sandbox",
-                "--disable-setuid-sandbox"
-            ]
-        });
-        
-        const page = await browser.newPage();
+    const browser = await puppeteer.launch({
+        headless: true,
+        executablePath: "/usr/bin/chromium",
+        args: [
+            "--no-sandbox",
+            "--disable-setuid-sandbox"
+        ]
+    });
 
-        await page.goto(req.body.url, {
-            waitUntil: "networkidle0"
-        });
+    const page = await browser.newPage();
 
-        const pdf = await page.pdf({
-            format: "A4",
-            printBackground: true,
-            margin: {
-                top: "10mm",
-                right: "10mm",
-                bottom: "10mm",
-                left: "10mm"
-            }
-        });
+    await page.goto(req.body.url, {
+        waitUntil: "networkidle0"
+    });
 
-        await browser.close();
+    const pdf = await page.pdf({
+        format: "A4",
+        printBackground: true
+    });
 
-        res.setHeader(
-            "Content-Type",
-            "application/pdf"
-        );
+    await browser.close();
 
-        res.send(pdf);
-
-    } catch (e) {
-
-        console.log(e);
-
-        res.status(500).send(e.message);
-
-    }
+    res.contentType("application/pdf");
+    res.send(pdf);
 
 });
 
-app.listen(
-    process.env.PORT || 3000,
-    () => console.log("Running")
-);
+app.listen(process.env.PORT || 3000);
