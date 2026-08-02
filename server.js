@@ -9,24 +9,33 @@ app.post("/pdf", async (req, res) => {
 
     try {
 
-        const browser = await puppeteer.launch({
-            headless: true,
-            args: [
-                "--no-sandbox",
-                "--disable-setuid-sandbox"
-            ]
-        });
+        console.log("1. Launching browser");
 
-        const page = await browser.newPage();
+const browser = await puppeteer.launch({
+    headless: true,
+    executablePath: "/usr/bin/chromium",
+    args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox"
+    ]
+});
 
-        await page.setContent(req.body.html, {
-            waitUntil: "networkidle0"
-        });
+console.log("2. Browser launched");
 
-        const pdf = await page.pdf({
-            format: "A4",
-            printBackground: true
-        });
+const page = await browser.newPage();
+
+console.log("3. Setting HTML");
+
+await page.setContent(req.body.html);
+
+console.log("4. Creating PDF");
+
+const pdf = await page.pdf({
+    format: "A4",
+    printBackground: true
+});
+
+console.log("5. PDF created");
 
         await browser.close();
 
