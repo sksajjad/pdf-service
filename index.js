@@ -3,7 +3,7 @@ const puppeteer = require('puppeteer');
 const app = express();
 app.use(express.json({ limit: '10mb' }));
 
-app.post('/generate-pdf', async (req, res) => {
+app.post('/gen', async (req, res) => {
   // if (req.headers['x-api-key'] !== process.env.API_KEY) {
   //   return res.status(401).send('Unauthorized');
   // }
