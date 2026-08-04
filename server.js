@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const puppeteer = require('puppeteer');
 
@@ -12,7 +13,14 @@ app.post('/pdf', async (req, res) => {
     try {
 
         const browser = await puppeteer.launch({
-            executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
+            executablePath: path.join(
+        process.cwd(),
+        'chrome',
+        'chrome',
+        'linux-151.0.7922.47',
+        'chrome-linux64',
+        'chrome'
+    ),
             headless: true,
             args: [
                 '--no-sandbox',
