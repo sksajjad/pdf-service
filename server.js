@@ -3,7 +3,7 @@ const express = require('express');
 const puppeteer = require('puppeteer');
 
 const app = express();
-console.log("Entered");
+
 app.use(express.json({
     limit: '50mb'
 }));
@@ -49,6 +49,8 @@ app.post('/pdf', async (req, res) => {
 
         page = await browser.newPage();
         console.log('1. New page created');
+        
+        await page.setCacheEnabled(true);
 
         // await page.setContent(req.body.html, {
         //     waitUntil: 'networkidle0'
