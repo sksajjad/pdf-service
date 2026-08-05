@@ -50,7 +50,7 @@ app.post('/pdf', async (req, res) => {
         page = await browser.newPage();
         console.log('1. New page created');
 
-        await page.setContent(req.body.html, {
+        await page.goto(req.body.url, {
             waitUntil: 'networkidle0'
         });
         console.log('2. HTML loaded');
