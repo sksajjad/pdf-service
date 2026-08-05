@@ -14,13 +14,13 @@ app.post('/pdf', async (req, res) => {
 
         const browser = await puppeteer.launch({
             executablePath: path.join(
-        process.cwd(),
-        'chrome',
-        'chrome',
-        'linux-151.0.7922.47',
-        'chrome-linux64',
-        'chrome'
-    ),
+                process.cwd(),
+                'chrome',
+                'chrome',
+                'linux-151.0.7922.47',
+                'chrome-linux64',
+                'chrome'
+            ),
             headless: true,
             args: [
                 '--no-sandbox',
