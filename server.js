@@ -48,10 +48,12 @@ app.post('/pdf', async (req, res) => {
         const browser = await getBrowser();
 
         page = await browser.newPage();
+        console.log('1. New page created');
 
         await page.setContent(req.body.html, {
             waitUntil: 'networkidle0'
         });
+        console.log('2. HTML loaded');
 
         const pdf = await page.pdf({
             format: 'A4',
@@ -63,15 +65,17 @@ app.post('/pdf', async (req, res) => {
                 left: '10mm'
             }
         });
+        console.log('3. PDF created');
 
         await page.close();
+        console.log('4. Page closed');
 
         res.set({
             'Content-Type': 'application/pdf'
         });
 
         res.send(pdf);
-
+        console.log('5. PDF Send');
     } catch (e) {
 
         console.log(e);
