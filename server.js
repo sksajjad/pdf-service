@@ -8,27 +8,46 @@ app.use(express.json({
     limit: '50mb'
 }));
 
+// Global browser instance
+let browser = null;
+
+// Launch browser only once
+async function getBrowser() {
+
+    if (browser && browser.connected) {
+        return browser;
+    }
+
+    browser = await puppeteer.launch({
+        executablePath: path.join(
+            process.cwd(),
+            'chrome',
+            'chrome',
+            'linux-151.0.7922.47',
+            'chrome-linux64',
+            'chrome'
+        ),
+        headless: true,
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox'
+        ]
+    });
+
+    console.log('Chrome launched');
+
+    return browser;
+}
+
 app.post('/pdf', async (req, res) => {
+
+    let page;
 
     try {
 
-        const browser = await puppeteer.launch({
-            executablePath: path.join(
-                process.cwd(),
-                'chrome',
-                'chrome',
-                'linux-151.0.7922.47',
-                'chrome-linux64',
-                'chrome'
-            ),
-            headless: true,
-            args: [
-                '--no-sandbox',
-                '--disable-setuid-sandbox'
-            ]
-        });
+        const browser = await getBrowser();
 
-        const page = await browser.newPage();
+        page = await browser.newPage();
 
         await page.setContent(req.body.html, {
             waitUntil: 'networkidle0'
@@ -45,7 +64,7 @@ app.post('/pdf', async (req, res) => {
             }
         });
 
-        await browser.close();
+        await page.close();
 
         res.set({
             'Content-Type': 'application/pdf'
@@ -57,10 +76,19 @@ app.post('/pdf', async (req, res) => {
 
         console.log(e);
 
-        res.status(500).send(e.toString());
+        if (page) {
+            await page.close().catch(() => {});
+        }
 
+        res.status(500).send(e.toString());
     }
 
 });
 
-app.listen(process.env.PORT || 3000);
+app.listen(process.env.PORT || 3000, async () => {
+
+    console.log('Server started');
+
+    await getBrowser();
+
+});
