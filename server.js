@@ -3,7 +3,7 @@ const express = require('express');
 const puppeteer = require('puppeteer');
 
 const app = express();
-
+console.log("Entered");
 app.use(express.json({
     limit: '50mb'
 }));
