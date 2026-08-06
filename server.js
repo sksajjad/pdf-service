@@ -52,12 +52,12 @@ app.post('/pdf', async (req, res) => {
         
         await page.setCacheEnabled(true);
 
-        await page.setContent(req.body.html, {
-            waitUntil: 'networkidle0'
-        });
-        // await page.goto(req.body.url, {
+        // await page.setContent(req.body.html, {
         //     waitUntil: 'networkidle0'
         // });
+        await page.goto(req.body.url, {
+            waitUntil: 'networkidle0'
+        });
         console.log('2. HTML loaded');
 
         const pdf = await page.pdf({
